@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="de-CH">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Subject Editor</title>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <link rel="stylesheet" href="taskpane.css" />
+  </head>
+  <body>
+    <main class="pane">
+      <h1 id="title">Betreff ändern</h1>
+
+      <form id="form" novalidate>
+        <section class="current">
+          <span id="currentLabel" class="label">Aktueller Betreff</span>
+          <p id="current" class="current-text">—</p>
+        </section>
+
+        <label id="newLabel" for="subject" class="label">Neuer Betreff</label>
+        <textarea id="subject" rows="3" spellcheck="true" autocomplete="off"></textarea>
+        <div class="meta">
+          <span id="shortcut"></span>
+          <span id="counter" aria-live="polite"></span>
+        </div>
+
+        <div class="actions">
+          <button id="save" type="submit" class="primary" disabled>Betreff speichern</button>
+          <button id="reset" type="button" class="secondary" disabled>Zurücksetzen</button>
+        </div>
+      </form>
+
+      <p id="status" class="status" role="status" aria-live="polite" hidden></p>
+    </main>
+    <script src="taskpane.js"></script>
+  </body>
+</html>

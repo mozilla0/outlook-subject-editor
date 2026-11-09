@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Template for the Outlook add-in manifest (add-in only manifest, XML).
+  scripts/Deploy-SubjectEditor.ps1 replaces the {{…}} placeholders and writes dist/manifest.xml.
+-->
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
+  xsi:type="MailApp">
+
+  <Id>{{ADDIN_ID}}</Id>
+  <Version>{{VERSION}}</Version>
+  <ProviderName>{{PROVIDER_NAME}}</ProviderName>
+  <DefaultLocale>de-CH</DefaultLocale>
+  <DisplayName DefaultValue="Subject Editor" />
+  <Description DefaultValue="Betreff empfangener E-Mails nachträglich ändern.">
+    <Override Locale="en-US" Value="Change the subject of received e-mails." />
+  </Description>
+  <IconUrl DefaultValue="{{BASE_URL}}/assets/icon-64.png" />
+  <HighResolutionIconUrl DefaultValue="{{BASE_URL}}/assets/icon-128.png" />
+  <SupportUrl DefaultValue="{{SUPPORT_URL}}" />
+
+  <AppDomains>
+    <AppDomain>{{ORIGIN}}</AppDomain>
+    <AppDomain>https://login.microsoftonline.com</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Mailbox" />
+  </Hosts>
+
+  <Requirements>
+    <Sets>
+      <Set Name="Mailbox" MinVersion="1.5" />
+    </Sets>
+  </Requirements>
+
+  <FormSettings>
+    <Form xsi:type="ItemRead">
+      <DesktopSettings>
+        <SourceLocation DefaultValue="{{BASE_URL}}/taskpane.html" />
+        <RequestedHeight>300</RequestedHeight>
+      </DesktopSettings>
+    </Form>
+  </FormSettings>
+
+  <!-- The subject is changed via Microsoft Graph, so read access to the item is enough. -->
+  <Permissions>ReadItem</Permissions>
+
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read" />
+  </Rule>
+
+  <DisableEntityHighlighting>false</DisableEntityHighlighting>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Requirements>
+      <bt:Sets DefaultMinVersion="1.5">
+        <bt:Set Name="Mailbox" />
+      </bt:Sets>
+    </Requirements>
+
+    <Hosts>
+      <Host xsi:type="MailHost">
+        <DesktopFormFactor>
+          <ExtensionPoint xsi:type="MessageReadCommandSurface">
+            <OfficeTab id="TabDefault">
+              <Group id="SubjectEditor.Group">
+                <Label resid="GroupLabel" />
+                <Control xsi:type="Button" id="SubjectEditor.OpenPane">
+                  <Label resid="PaneButton.Label" />
+                  <Supertip>
+                    <Title resid="PaneButton.Label" />
+                    <Description resid="PaneButton.Tooltip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16" />
+                    <bt:Image size="32" resid="Icon.32" />
+                    <bt:Image size="80" resid="Icon.80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="Taskpane.Url" />
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16" DefaultValue="{{BASE_URL}}/assets/icon-16.png" />
+        <bt:Image id="Icon.32" DefaultValue="{{BASE_URL}}/assets/icon-32.png" />
+        <bt:Image id="Icon.80" DefaultValue="{{BASE_URL}}/assets/icon-80.png" />
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Taskpane.Url" DefaultValue="{{BASE_URL}}/taskpane.html" />
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="GroupLabel" DefaultValue="Subject Editor" />
+        <bt:String id="PaneButton.Label" DefaultValue="Betreff ändern">
+          <bt:Override Locale="en-US" Value="Change subject" />
+        </bt:String>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="PaneButton.Tooltip" DefaultValue="Öffnet einen Bereich, in dem du den Betreff dieser E-Mail ändern kannst.">
+          <bt:Override Locale="en-US" Value="Opens a pane where you can change the subject of this e-mail." />
+        </bt:String>
+      </bt:LongStrings>
+    </Resources>
+
+    <!-- Version 1.1 adds pinning (keep the pane open while switching messages) and shared mailboxes. -->
+    <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.1" xsi:type="VersionOverridesV1_1">
+      <Requirements>
+        <bt:Sets DefaultMinVersion="1.5">
+          <bt:Set Name="Mailbox" />
+        </bt:Sets>
+      </Requirements>
+
+      <Hosts>
+        <Host xsi:type="MailHost">
+          <DesktopFormFactor>
+            <SupportsSharedFolders>true</SupportsSharedFolders>
+            <ExtensionPoint xsi:type="MessageReadCommandSurface">
+              <OfficeTab id="TabDefault">
+                <Group id="SubjectEditor.Group">
+                  <Label resid="GroupLabel" />
+                  <Control xsi:type="Button" id="SubjectEditor.OpenPane">
+                    <Label resid="PaneButton.Label" />
+                    <Supertip>
+                      <Title resid="PaneButton.Label" />
+                      <Description resid="PaneButton.Tooltip" />
+                    </Supertip>
+                    <Icon>
+                      <bt:Image size="16" resid="Icon.16" />
+                      <bt:Image size="32" resid="Icon.32" />
+                      <bt:Image size="80" resid="Icon.80" />
+                    </Icon>
+                    <Action xsi:type="ShowTaskpane">
+                      <SourceLocation resid="Taskpane.Url" />
+                      <SupportsPinning>true</SupportsPinning>
+                    </Action>
+                  </Control>
+                </Group>
+              </OfficeTab>
+            </ExtensionPoint>
+          </DesktopFormFactor>
+        </Host>
+      </Hosts>
+
+      <Resources>
+        <bt:Images>
+          <bt:Image id="Icon.16" DefaultValue="{{BASE_URL}}/assets/icon-16.png" />
+          <bt:Image id="Icon.32" DefaultValue="{{BASE_URL}}/assets/icon-32.png" />
+          <bt:Image id="Icon.80" DefaultValue="{{BASE_URL}}/assets/icon-80.png" />
+        </bt:Images>
+        <bt:Urls>
+          <bt:Url id="Taskpane.Url" DefaultValue="{{BASE_URL}}/taskpane.html" />
+        </bt:Urls>
+        <bt:ShortStrings>
+          <bt:String id="GroupLabel" DefaultValue="Subject Editor" />
+          <bt:String id="PaneButton.Label" DefaultValue="Betreff ändern">
+            <bt:Override Locale="en-US" Value="Change subject" />
+          </bt:String>
+        </bt:ShortStrings>
+        <bt:LongStrings>
+          <bt:String id="PaneButton.Tooltip" DefaultValue="Öffnet einen Bereich, in dem du den Betreff dieser E-Mail ändern kannst.">
+            <bt:Override Locale="en-US" Value="Opens a pane where you can change the subject of this e-mail." />
+          </bt:String>
+        </bt:LongStrings>
+      </Resources>
+    </VersionOverrides>
+  </VersionOverrides>
+</OfficeApp>
